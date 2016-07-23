@@ -18,7 +18,6 @@ module MagicalAsync
       return callback.call(nil, results) if task_index == tasks.length
 
       task_callback = -> (error, arg) {
-        puts "callback #{arg}"
         results << arg
         task_index += 1
         next_tasks.call
