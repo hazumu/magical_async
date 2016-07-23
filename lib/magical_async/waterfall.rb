@@ -1,5 +1,5 @@
 module MagicalAsync
-  def waterfall(tasks, callback)
+  def self.waterfall(tasks, callback)
     # TODO: 配列じゃないエラー
     # TODO: 配列が空エラー
     task_index = 0

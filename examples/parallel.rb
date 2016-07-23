@@ -1,10 +1,6 @@
 require "net/http"
 require 'benchmark'
-require 'rubygems'
 require 'uri'
-
-#dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
-#require File.join(dir, 'magical_async')
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "/../lib"))
 require 'magical_async'
 
