@@ -9,17 +9,17 @@ require 'thread'
 # - MagicalAsync内でキャッシングするのが筋が良さそう
 module MagicalAsync
   def self.paralell(tasks, callback)
-    all_result = {}
+    results = {}
     threads = []
     tasks.each_pair do |key, task|
       threads << Thread.new do
         task.call -> (result) {
-          all_result[key] = result
+          results[key] = result
         }
       end
     end
 
     threads.each(&:join)
-    callback.call all_result
+    callback.call results
   end
 end

@@ -19,32 +19,31 @@ end
 puts "serial process #{result_serial}s"
 
 result_paralell = Benchmark.realtime do
-
-MagicalAsync.paralell({
-   first: -> (callback) {
-    res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
-      http.get "/"
-    end
-    callback.call 'first'
-   },
-   second: -> (callback) {
-      tasks = {};
-      0.upto(REQUEST_COUNT) { |num|
-        tasks[num.to_s.to_sym] = -> (callback) {
-          res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
-            http.get "/"
-          end
-          callback.call "#{num}番目"
+  MagicalAsync.paralell({
+     first: -> (callback) {
+      res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
+        http.get "/"
+      end
+      callback.call 'first'
+     },
+     second: -> (callback) {
+        tasks = {};
+        0.upto(REQUEST_COUNT) { |num|
+          tasks[num.to_s.to_sym] = -> (callback) {
+            res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
+              http.get "/"
+            end
+            callback.call "#{num}番目"
+          }
         }
-      }
-     MagicalAsync.paralell(tasks, -> (res) { puts res; callback.call 'second';})
-   },
-   third: -> (callback) {
-     res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
-       http.get "/"
-     end
-     callback.call 'third' 
-   },
- }, -> (res) { puts res });
-end
+       MagicalAsync.paralell(tasks, -> (res) { puts res; callback.call 'second';})
+     },
+     third: -> (callback) {
+       res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
+         http.get "/"
+       end
+       callback.call 'third' 
+     },
+   }, -> (res) { puts res });
+  end
 puts "parallel process #{result_paralell}s"
