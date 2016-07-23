@@ -17,12 +17,12 @@ class MagicalAsync
     # TODO: 配列が空エラー
     task_index = 0
 
-    nextTasks = -> (args) {
+    next_tasks = -> (args) {
       return callback.call(nil, *args) if task_index == tasks.length
 
       task_callback = -> (*args) {
         task_index += 1
-        nextTasks.call args
+        next_tasks.call args
       }
 
       args.push task_callback
@@ -30,7 +30,7 @@ class MagicalAsync
       tasks[task_index].call *args
     }
 
-    nextTasks.call []
+    next_tasks.call []
   end
 
   def self.paralell(tasks, callback)
