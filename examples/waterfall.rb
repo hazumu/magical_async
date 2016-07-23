@@ -21,8 +21,8 @@ MagicalAsync.waterfall([
     end
     callback.call 'second_1', 'second_2'
   },
-  -> (data, name, callback) {
-    puts "#{data} , #{name}"
+  -> (data_1, data_2, callback) {
+    puts "#{data_1} , #{data_2}"
     res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
      http.get "/"
     end
