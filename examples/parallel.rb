@@ -18,8 +18,8 @@ result_serial = Benchmark.realtime do
 end
 puts "serial process #{result_serial}s"
 
-result_paralell = Benchmark.realtime do
-  MagicalAsync.paralell({
+result_parallel = Benchmark.realtime do
+  MagicalAsync.parallel({
      first: -> (callback) {
       res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
         http.get "/"
@@ -36,7 +36,7 @@ result_paralell = Benchmark.realtime do
             callback.call "#{num}番目"
           }
         }
-       MagicalAsync.paralell(tasks, -> (res) { puts res; callback.call 'second';})
+       MagicalAsync.parallel(tasks, -> (res) { puts res; callback.call 'second';})
      },
      third: -> (callback) {
        res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
@@ -46,4 +46,4 @@ result_paralell = Benchmark.realtime do
      },
    }, -> (res) { puts res });
   end
-puts "parallel process #{result_paralell}s"
+puts "parallel process #{result_parallel}s"

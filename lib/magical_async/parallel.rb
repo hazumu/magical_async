@@ -8,7 +8,7 @@ require 'thread'
 # - 同じネットワーク内での通信なので通信速度よりもおそらくボトルネックはスレッド数
 # - MagicalAsync内でキャッシングするのが筋が良さそう
 module MagicalAsync
-  def self.paralell(tasks, callback)
+  def self.parallel(tasks, callback)
     results = {}
     threads = []
     tasks.each_pair do |key, task|
