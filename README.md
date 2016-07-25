@@ -20,9 +20,9 @@ And run `bundle install` within your app's directory.
 
 See examples.
 
-- (parallel)[https://github.com/hazumu/magical_async/blob/master/examples/parallel.rb]
-- (waterfall)[https://github.com/hazumu/magical_async/blob/master/examples/waterfall.rb]
-- (series)[https://github.com/hazumu/magical_async/blob/master/examples/series.rb]
+- [parallel(https://github.com/hazumu/magical_async/blob/master/examples/parallel.rb)
+- [waterfall](https://github.com/hazumu/magical_async/blob/master/examples/waterfall.rb)
+- [series](https://github.com/hazumu/magical_async/blob/master/examples/series.rb)
 
 ## Contributing
 
