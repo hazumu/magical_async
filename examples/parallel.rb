@@ -10,14 +10,14 @@ require 'magical_async'
 TEST_URI = URI.parse('http://hazumu.net/blog/')
 REQUEST_COUNT = 80
 
-#result_serial = Benchmark.realtime do
-#  REQUEST_COUNT.times do 
-#    res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
-#      http.get "/"
-#    end
-#  end
-#end
-#puts "serial process #{result_serial}s"
+result_serial = Benchmark.realtime do
+  REQUEST_COUNT.times do 
+    res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
+      http.get "/"
+    end
+  end
+end
+puts "serial process #{result_serial}s"
 
 result_parallel = Benchmark.realtime do
   REDIS_EXPIRE = 100
@@ -31,29 +31,37 @@ result_parallel = Benchmark.realtime do
      }),
 
      second: -> (callback) {
-       MagicalAsync.parallel({
-         second_1: MagicalAsync.cacheable('url_2', REDIS_EXPIRE, -> (callback) {
+
+       MagicalAsync.waterfall([
+         MagicalAsync.cacheable('url_2', REDIS_EXPIRE, -> (callback) {
            res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
              http.get "/"
            end
            callback.call 'second_1'
-         })
-        }, -> (res) { 
-          # TODO: refactor
-          puts res
-          tasks = {};
-          0.upto(REQUEST_COUNT) { |num|
-            tasks[num.to_s.to_sym] = MagicalAsync.cacheable("url_2_#{num}", REDIS_EXPIRE, -> (callback) {
-              res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
-                http.get "/"
-              end
+         }), 
+         -> (res, callback) { 
+           tasks = {};
+           0.upto(REQUEST_COUNT) { |num|
+             tasks[num.to_s.to_sym] = MagicalAsync.cacheable("url_2_#{num}", REDIS_EXPIRE, -> (callback) {
+               res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
+                 http.get "/"
+               end
+           
+               callback.call "call number -> #{num}"
+             })
+           }
+           
+           MagicalAsync.parallel(tasks, -> (res) { puts res; callback.call 'second_2';})
+         },
+         -> (res, callback) { 
+           puts 'second_3'
+           callback.call 'second_3'
+         },
+     ],
+       -> (err, res) {
+         callback.call 'second'
+       })
 
-              callback.call "call number -> #{num}"
-            })
-          }
-
-          MagicalAsync.parallel(tasks, -> (res) { puts res; callback.call 'second';})
-        })
      },
      third: -> (callback) {
        res = Net::HTTP.start(TEST_URI.host, TEST_URI.port) do |http|
