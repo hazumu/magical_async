@@ -3,7 +3,7 @@
 Magical Async provides utility modules which makes async programing so easy.
 This gem is inspired in [Async.js](https://github.com/caolan/async).
 
-Now this module has three features, whichi is 'parallel', 'waterfall' and 'series'.
+Now this module has three features, which are 'parallel', 'waterfall' and 'series'.
 
 ## Installation
 
